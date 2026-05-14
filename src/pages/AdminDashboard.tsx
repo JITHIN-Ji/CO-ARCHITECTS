@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import {
   Plus, Trash2, Upload, X, Save, Edit2,
   Image as ImageIcon, Video, Loader2,
-  CheckCircle2, AlertCircle, ArrowLeft
+  CheckCircle2, AlertCircle, ArrowLeft, LogOut
 } from "lucide-react";
 import { supabase, BUCKET, getPublicUrl } from "../supabaseClient";
 import { Link } from "react-router-dom";
@@ -556,8 +556,109 @@ function DeleteModal({ project, onConfirm, onCancel }: { project: any; onConfirm
   );
 }
 
+// ─── LOGIN FORM ───────────────────────────────────────────────────────────────
+function LoginForm({ onLogin }: { onLogin: () => void }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+
+    if (email === adminEmail && password === adminPassword) {
+      localStorage.setItem('adminAuth', 'true');
+      onLogin();
+    } else {
+      setError('Invalid email or password');
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4">
+      <motion.div
+        className="w-full max-w-sm"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 260, damping: 70 }}
+      >
+        <div className="border border-white/[0.08] rounded-2xl p-8 bg-white/[0.02] backdrop-blur-sm">
+          <h1 className="text-3xl font-light text-white mb-2" style={{ fontFamily: "Georgia, serif" }}>
+            Admin Access
+          </h1>
+          <p className="text-[10px] tracking-[3px] text-white/30 uppercase mb-8">Enter your credentials</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-[9px] tracking-[3px] text-white/40 uppercase mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition text-sm"
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-[9px] tracking-[3px] text-white/40 uppercase mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition text-sm"
+                disabled={loading}
+              />
+            </div>
+
+            {error && (
+              <motion.p
+                className="text-sm text-red-400 flex items-center gap-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <AlertCircle className="size-3.5" />
+                {error}
+              </motion.p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-white text-black hover:bg-white/90 disabled:opacity-50 px-5 py-3 rounded-lg text-[10px] tracking-[3px] uppercase font-medium transition mt-6"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 className="size-3.5 animate-spin" />
+                  Logging in...
+                </span>
+              ) : (
+                'Login'
+              )}
+            </button>
+          </form>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
 // ─── MAIN DASHBOARD ───────────────────────────────────────────────────────────
 export default function AdminDashboard() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [projects, setProjects] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState('list'); // 'list' | 'new' | 'edit'
@@ -584,7 +685,13 @@ export default function AdminDashboard() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchProjects(); }, []);
+  // ── Check authentication ──────────────────────────────────────────────────
+  useEffect(() => {
+    const isAuth = localStorage.getItem('adminAuth') === 'true';
+    setIsAuthenticated(isAuth);
+    setCheckingAuth(false);
+    if (isAuth) fetchProjects();
+  }, []);
 
   // ── Delete ────────────────────────────────────────────────────────────────
   const confirmDelete = async () => {
@@ -620,6 +727,21 @@ export default function AdminDashboard() {
     { label: 'Architecture', value: projects.filter(p => p.category === 'Architecture').length },
   ];
 
+  // ── Handle logout ─────────────────────────────────────────────────────────
+  const handleLogout = () => {
+    localStorage.removeItem('adminAuth');
+    setIsAuthenticated(false);
+  };
+
+  // ── Show login if not authenticated ───────────────────────────────────────
+  if (checkingAuth) {
+    return <div className="min-h-screen bg-[#0a0a0a]" />;
+  }
+
+  if (!isAuthenticated) {
+    return <LoginForm onLogin={() => { setIsAuthenticated(true); fetchProjects(); }} />;
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       {/* Fixed grid bg */}
@@ -635,12 +757,20 @@ export default function AdminDashboard() {
           <div className="h-4 w-px bg-white/10" />
           <p className="text-[10px] tracking-[5px] text-white/40 uppercase">CO — Admin</p>
         </div>
-        <button
-          onClick={() => { setEditing(null); setView('new'); }}
-          className="flex items-center gap-2 bg-white text-[#0a0a0a] px-5 py-2.5 rounded-full text-[10px] tracking-[3px] uppercase font-medium hover:bg-white/90 transition"
-        >
-          <Plus className="size-3.5" /> New Project
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => { setEditing(null); setView('new'); }}
+            className="flex items-center gap-2 bg-white text-[#0a0a0a] px-5 py-2.5 rounded-full text-[10px] tracking-[3px] uppercase font-medium hover:bg-white/90 transition"
+          >
+            <Plus className="size-3.5" /> New Project
+          </button>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 border border-white/15 text-white/40 hover:text-white/70 px-4 py-2.5 rounded-full text-[10px] tracking-[3px] uppercase font-medium hover:border-white/30 transition"
+          >
+            <LogOut className="size-3.5" /> Logout
+          </button>
+        </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 py-12 space-y-10">
