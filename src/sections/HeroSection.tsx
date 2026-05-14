@@ -73,8 +73,8 @@ export default function HeroSection() {
                             {["CONCEPT", "CONSTRUCT", "COMPLETE"].map((word, i) => (
                                 <div key={word} className="overflow-hidden">
                                     <motion.h1
-                                        className="block font-light leading-none tracking-tight text-3xl sm:text-4xl md:text-5xl"
-                                        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+                                        className="block font-light leading-none tracking-widest text-3xl sm:text-4xl md:text-5xl"
+                                        style={{ fontFamily: "'Montserrat', sans-serif" }}
                                         initial={{ opacity: 0, y: 50 }}
                                         animate={{
                                             opacity: 1,
