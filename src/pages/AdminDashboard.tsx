@@ -748,30 +748,32 @@ export default function AdminDashboard() {
       <div className="fixed inset-0 -z-10 opacity-[0.12] pointer-events-none"
         style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
 
-      {/* ── Header ── */}
-      <div className="border-b border-white/[0.06] px-6 md:px-12 py-5 flex items-center justify-between sticky top-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-40">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2 text-white/30 hover:text-white/60 transition text-[10px] tracking-[3px] uppercase">
-            <ArrowLeft className="size-3" /> Site
-          </Link>
-          <div className="h-4 w-px bg-white/10" />
-          <p className="text-[10px] tracking-[5px] text-white/40 uppercase">CO — Admin</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => { setEditing(null); setView('new'); }}
-            className="flex items-center gap-2 bg-white text-[#0a0a0a] px-5 py-2.5 rounded-full text-[10px] tracking-[3px] uppercase font-medium hover:bg-white/90 transition"
-          >
-            <Plus className="size-3.5" /> New Project
-          </button>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 border border-white/15 text-white/40 hover:text-white/70 px-4 py-2.5 rounded-full text-[10px] tracking-[3px] uppercase font-medium hover:border-white/30 transition"
-          >
-            <LogOut className="size-3.5" /> Logout
-          </button>
-        </div>
-      </div>
+      <div className="border-b border-white/[0.06] px-4 md:px-12 py-4 flex items-center justify-between sticky top-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-40 gap-3">
+  <div className="flex items-center gap-3 md:gap-6 min-w-0">
+    <Link to="/" className="flex items-center gap-1.5 text-white/30 hover:text-white/60 transition text-[10px] tracking-[3px] uppercase shrink-0">
+      <ArrowLeft className="size-3" /> Site
+    </Link>
+    <div className="h-4 w-px bg-white/10 shrink-0" />
+    <p className="text-[10px] tracking-[3px] md:tracking-[5px] text-white/40 uppercase truncate">CO — Admin</p>
+  </div>
+  <div className="flex items-center gap-2 shrink-0">
+    <button
+      onClick={() => { setEditing(null); setView('new'); }}
+      className="flex items-center gap-1.5 bg-white text-[#0a0a0a] px-3 md:px-5 py-2 md:py-2.5 rounded-full text-[10px] tracking-[2px] md:tracking-[3px] uppercase font-medium hover:bg-white/90 transition"
+    >
+      <Plus className="size-3.5" />
+      <span className="hidden sm:inline">New Project</span>
+      <span className="sm:hidden">New</span>
+    </button>
+    <button
+      onClick={handleLogout}
+      className="flex items-center gap-1.5 border border-white/15 text-white/40 hover:text-white/70 px-3 md:px-4 py-2 md:py-2.5 rounded-full text-[10px] tracking-[2px] uppercase font-medium hover:border-white/30 transition"
+    >
+      <LogOut className="size-3.5" />
+      <span className="hidden sm:inline">Logout</span>
+    </button>
+  </div>
+</div>
 
       <div className="max-w-5xl mx-auto px-6 md:px-12 py-12 space-y-10">
 
