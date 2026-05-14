@@ -63,7 +63,7 @@ export default function ContactSection() {
                         {/* Contact details */}
                         <div className="flex flex-col gap-6">
                             {[
-                                { icon: Mail, label: "Email", value: "info@coarchitects.ae" },
+                                { icon: Mail, label: "Email", value: "Coarchitectuaegroup@gmail.com" },
                                 { icon: Phone, label: "Phone", value: "+971 56 380 2474" },
                                 { icon: MapPin, label: "Studio", value: "Dubai, United Arab Emirates" },
                             ].map(({ icon: Icon, label, value }) => (
