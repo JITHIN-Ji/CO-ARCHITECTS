@@ -116,9 +116,14 @@ export default function HeroSection() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.75, type: "spring", stiffness: 360, damping: 70 }}
                     >
-                        <button className="bg-white text-black hover:bg-white/90 transition rounded-full px-8 h-11 text-sm tracking-widest uppercase font-medium w-full sm:w-auto">
+                        <a
+                            href="https://wa.me/971563802474"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-white text-black hover:bg-white/90 transition rounded-full px-8 h-11 text-sm tracking-widest uppercase font-medium w-full sm:w-auto flex items-center justify-center"
+                        >
                             Start Your Project
-                        </button>
+                        </a>
                         <Link
                             to="/work"
                             className="flex items-center justify-center gap-2 border border-white/20 hover:border-white/40 hover:bg-white/5 transition rounded-full px-7 h-11 text-sm tracking-widest uppercase text-white/70 w-full sm:w-auto"
